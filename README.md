@@ -240,5 +240,3 @@ Thank you for your interest in contributing to `linux-command`! Your contributio
 ## License
 
 This project is licensed under the MIT License.
-
-To encourage contributions and pull requests from the community, you can add a section to your `README.md` that welcomes contributions. This section typically explains how people can contribute to the project, submit issues, and make pull requests. It’s also a good idea to outline some basic guidelines for contributing (e.g., coding style, creating issues before pull requests).
