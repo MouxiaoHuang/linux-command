@@ -31,7 +31,7 @@ import glob
 
 
 # Define the version 
-VERSION = "0.0.1"
+VERSION = "0.1.0"
 PROJECT_URL = "https://github.com/MouxiaoHuang/linux-command" 
 
 
