@@ -1,8 +1,10 @@
 from setuptools import setup, find_packages
+from linux_command.linux_command import VERSION, PROJECT_URL
+
 
 setup(
     name='linux-command',
-    version='0.0.0',
+    version=VERSION,
     packages=find_packages(),
     entry_points={
         'console_scripts': [
@@ -15,7 +17,7 @@ setup(
     description='A command line tool to perform custom tasks.',
     long_description=open('README.md').read(),
     long_description_content_type='text/markdown',
-    url='https://github.com/MouxiaoHuang/linux-command',
+    url=PROJECT_URL,
     classifiers=[
         'Programming Language :: Python :: 3',
         'License :: OSI Approved :: MIT License',
