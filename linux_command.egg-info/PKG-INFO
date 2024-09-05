@@ -1,0 +1,28 @@
+Metadata-Version: 2.1
+Name: linux-command
+Version: 0.0.0
+Summary: A command line tool to perform custom tasks.
+Home-page: https://github.com/yourusername/mycommand
+Author: Mouxiao Huang
+Author-email: huangmouxiao@gmail.com
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.6
+Description-Content-Type: text/markdown
+
+# linux-command: Linux Command
+
+`linux-command` 是一个用于执行特定命令行任务的工具。
+
+## 安装
+
+```bash
+pip install linux-command
+```
+
+## 使用
+
+```bash
+cmd ls-dir
+```
