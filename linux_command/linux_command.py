@@ -31,7 +31,7 @@ import glob
 
 
 # Define the version 
-VERSION = "0.1.0"
+VERSION = "0.2.0"
 PROJECT_URL = "https://github.com/MouxiaoHuang/linux-command" 
 
 
@@ -201,30 +201,43 @@ def main():
 
     # Tar compression and decompression
     elif args.command == 'tar-compress':
-        if len(args.extra) == 2:
+        if len(args.extra) >= 2:
             source = args.extra[0]
             output = args.extra[1]
+            exclude = args.extra[2:]  # Additional arguments as exclude patterns
+            exclude_params = ' '.join(f'--exclude={x}' for x in exclude)
             if output.endswith('.tar.gz'):
-                os.system(f'tar -czvf {output} {source}')
+                os.system(f'tar -czvf {output} {exclude_params} {source}')
             elif output.endswith('.tar'):
-                os.system(f'tar -cvf {output} {source}')
+                os.system(f'tar -cvf {output} {exclude_params} {source}')
             else:
                 print('Unsupported output format. Please provide .tar or .tar.gz as the output file extension.')
         else:
             print('Please provide a source and output file for tar compression')
 
     elif args.command == 'tar-extract':
-        if len(args.extra) == 2:
-            archive = args.extra[0]
+        if len(args.extra) >= 2:
+            source = args.extra[0]
             destination = args.extra[1]
-            if archive.endswith('.tar.gz'):
-                os.system(f'tar -xzvf {archive} -C {destination}')
-            elif archive.endswith('.tar'):
-                os.system(f'tar -xvf {archive} -C {destination}')
+            file_type = args.extra[2] if len(args.extra) > 2 else "all"  # Optional file type filter
+
+            if os.path.isdir(source):  # Check if source is a directory
+                if file_type[-3:] == "tar":
+                    tar_files = glob.glob(os.path.join(source, '*.tar'))
+                elif file_type[-2:] == "gz":
+                    tar_files = glob.glob(os.path.join(source, '*.tar.gz'))
+                else:  # Extract all tar and tar.gz files
+                    tar_files = glob.glob(os.path.join(source, '*.tar')) + glob.glob(os.path.join(source, '*.tar.gz'))
+
+                for tar_file in tar_files:
+                    os.system(f'tar -xzf {tar_file} -C {destination}')
+            elif source.endswith('.tar.gz') or source.endswith('.tar'):
+                # Extract a single tar file
+                os.system(f'tar -xzf {source} -C {destination}')
             else:
-                print('Unsupported file format. Please provide a .tar or .tar.gz file for extraction.')
-        else:
-            print('Please provide a tar file and destination for extraction')
+                print('Please provide a valid .tar or .tar.gz file, or a directory containing such files.')
+
+
 
     elif args.command == 'tar-list':
         if len(args.extra) > 0:
@@ -237,6 +250,26 @@ def main():
             os.system(f'tar -rvf {args.extra[1]} {args.extra[0]}')
         else:
             print('Please provide a file to add and the target tar file')
+    
+    # Unzip
+    elif args.command == 'unzip-all':
+        if len(args.extra) == 2:
+            source_dir = args.extra[0]
+            target_dir = args.extra[1]
+            os.system(f'find {source_dir} -name "*.zip" -exec unzip {{}} -d {target_dir} \;')
+        else:
+            print('Please provide both a source and a target directory.')
+    
+    # Zip compress
+    elif args.command == 'zip-all':
+        if len(args.extra) >= 2:
+            output = args.extra[0]
+            sources = args.extra[1:]  # All other arguments as sources to be zipped
+            source_params = ' '.join(sources)
+            os.system(f'zip -r {output} {source_params}')
+        else:
+            print('Please provide an output file name and at least one source to compress.')
+
 
 if __name__ == '__main__':
     main()

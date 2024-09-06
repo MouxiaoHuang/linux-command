@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: linux-command
-Version: 0.1.0
+Version: 0.2.0
 Summary: A command line tool to perform custom tasks.
 Home-page: https://github.com/MouxiaoHuang/linux-command
 Author: Mouxiao Huang
@@ -192,32 +192,37 @@ cmd grep "search_term" /path/to/file
 
 ---
 
-### 26. `tar-compress [source] [output]` - Compress files into a `.tar` or `.tar.gz` archive
-
-- For `.tar.gz`:
+### 26. `tar-compress [source directory] [output file] [--exclude file_or_directory ...]` - Compress directories into `.tar` or `.tar.gz` while excluding specific files or folders
 
 ```bash
-cmd tar-compress /path/to/source archive.tar.gz
+cmd tar-compress /path/to/source /path/to/output.tar.gz --exclude node_modules --exclude .git
+```
+This command will compress `/path/to/source` into `/path/to/output.tar.gz` and exclude the `node_modules` and `.git` directories.
+
+### 27. `tar-extract [source] [destination directory]` - Extract a single file or all `.tar`/`.tar.gz` files from a specified directory
+
+- To extract a single `.tar` or `.tar.gz` file:
+
+```bash
+cmd tar-extract /path/to/archive.tar.gz /path/to/destination
 ```
 
-- For `.tar`:
+- To extract all `.tar` and `.tar.gz` files within a directory (default: all):
 
 ```bash
-cmd tar-compress /path/to/source archive.tar
+cmd tar-extract /path/to/directory /path/to/destination all
 ```
 
-### 27. `tar-extract [archive] [destination]` - Extract a `.tar` or `.tar.gz` archive
-
-- For `.tar.gz`:
+- To extract all `.tar` files within a directory:
 
 ```bash
-cmd tar-extract archive.tar.gz /path/to/destination
+cmd tar-extract /path/to/directory /destination/path tar
 ```
 
-- For `.tar`:
+- To extract all `.tar.gz` files within a directory:
 
 ```bash
-cmd tar-extract archive.tar /path/to/destination
+cmd tar-extract /path/to/directory /destination/path gz
 ```
 
 ### 28. `tar-list [archive]` - List contents of a `.tar` or `.tar.gz` archive
@@ -228,9 +233,25 @@ cmd tar-list archive.tar.gz
 
 ### 29. `tar-add [file] [archive]` - Add a file to an existing `.tar` archive
 
+---
+
 ```bash
 cmd tar-add newfile.txt archive.tar
 ```
+
+### 30. `unzip-all [source directory] [target directory]` - Extract all `.zip` files found in a specified directory into a target directory
+
+```bash
+cmd unzip-all /path/to/zips /path/to/extract
+```
+This command will find all `.zip` files in `/path/to/zips` and extract each into `/path/to/extract`.
+
+### 31. `zip-compress [output file.zip] [directory or file ...]` - Create a `.zip` file that includes multiple specified directories or files
+
+```bash
+cmd zip-compress /path/to/output.zip /path/to/dir1 /path/to/dir2
+```
+This command will create a `.zip` file at `/path/to/output.zip` that contains everything in `/path/to/dir1` and `/path/to/dir2`.
 
 ---
 
