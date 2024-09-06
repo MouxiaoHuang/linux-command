@@ -1,2 +1,0 @@
-[console_scripts]
-cmd = linux_command.linux_command:main
