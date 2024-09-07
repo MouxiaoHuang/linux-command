@@ -31,8 +31,49 @@ import glob
 
 
 # Define the version 
-VERSION = "0.2.0"
+VERSION = "0.2.1"
 PROJECT_URL = "https://github.com/MouxiaoHuang/linux-command" 
+
+
+# Command descriptions
+commands = {
+    'ls': 'List contents.',
+    'lsf': 'Count all files or filter by a specified pattern, extension or keyword. Same as `ls-file`.',
+    'ls-file': 'Count all files or filter by a specified pattern, extension or keyword. Same as `lsf`.',
+    'lsd': 'Count all directories. Same as `ls-dir`.',
+    'ls-dir': 'Count all directories. Same as `lsd`.',
+    'ls-reverse': 'List files and directories in reverse order.',
+    'ls-time': 'List sorted by modification time, newest first.',
+    'ls-recursive-size': 'List all files and directories recursively, with sizes in human-readable format',
+    'ls-bs': 'Display the size of each file in specified block size (e.g., K, M, G).',
+    'ls-size': 'Display the size of each file in specified block size (e.g., K, M, G).',
+    'ls-block-size': 'Display the size of each file in specified block size (e.g., K, M, G).',
+    'ps': 'Basic process list.',
+    'ps-all': 'Show all processes.',
+    'ps-user': 'Show processes for a specific user',
+    'ps-aux': 'Show detailed information about all processes.',
+    'ps-sort-memory': 'Sort processes by memory usage.',
+    'ps-sort-cpu': 'Sort processes by CPU usage.',
+    'ps-grep': 'Search for a specific process by name or keyword.',
+    'kill': 'Kill a process with PID or keyword in its name.',
+    'df': 'Show disk usage.',
+    'du': 'Show disk usage of a directory. Default: current directory.',
+    'disk': 'Show disk usage of a directory. Default: current directory.',
+    'rm': 'Remove file, directory, or multiple files by patterns (e.g., *.txt)',
+    'grep': 'Search for a pattern in files or output.',
+    'tar': 'Pack into .tar or .tar.gz file.',
+    'tar-comress': 'Pack into .tar or .tar.gz file.',
+    'untar': 'Unpack .tar or .tar.gz file, or batch process in a directory.',
+    'tar-extract': 'Unpack .tar or .tar.gz file, or batch process in a directory.',
+    'tar-list': 'List all contents in a tar file.',
+    'tar-add': 'Add a file to a tar file.',
+    'zip': 'Pack a folder to a .zip file.',
+    'zip-all': 'Pack a folder to a .zip file.',
+    'unzip': 'Unpack all .zip files in a directory to another.',
+    'unzip-all': 'Unpack all .zip files in a directory to another.',
+    'convert-vid': 'Video pattern trans. Usage: convert-video [source file or pattern] [destination file or pattern]',
+    'convert-video': 'Video pattern trans. Usage: convert-video [source file or pattern] [destination file or pattern]',
+}
 
 
 def confirm_action(message):
@@ -46,11 +87,11 @@ def main():
     parser = argparse.ArgumentParser(
         description="Linux Command Wrapper - Execute common Linux commands easily",
         epilog=f"Project page: {PROJECT_URL}",
-        add_help=True
+        add_help=False
     )
 
-    # Add version option
-    parser.add_argument('-V', '--version', action='version', version=f'linux-command {VERSION}')
+    parser.add_argument('-h', '--help', action='store_true', help='Show this help message and exit')
+    parser.add_argument('-V', '-v', '--version', action='version', version=f'linux-command {VERSION}', help='Show program\'s version number and exit')
     
     # Main command and subcommands
     parser.add_argument('command', type=str, help='Command to execute')
@@ -58,6 +99,22 @@ def main():
 
     # Parse the arguments
     args = parser.parse_args()
+
+    if args.help:
+        if args.command:
+            # Show help for a specific command
+            print(f'{args.command}: {commands.get(args.command, "No help available for this command.")}')
+        else:
+            # Show help for all commands
+            print("Available commands:")
+            for command, description in commands.items():
+                print(f'  {command}: {description}')
+            print("\nUse 'cmd -h [command]' to see help for a specific command.")
+        return
+
+    if not args.command:
+        parser.print_help()
+        return
 
     # `ls` commands
     if args.command == 'ls':
@@ -70,13 +127,18 @@ def main():
     
     # Advanced `ls` commands
 
-    elif args.command == 'ls-dir':
+    elif args.command == 'ls-dir' or args.command == 'lsd':
         # Count the number of directories
         os.system('ls -lR | grep "^d" | wc -l')
     
-    elif args.command == 'ls-file':
-        # Count the number of files
-        os.system('ls -l | grep "^-" | wc -l')
+    elif args.command == 'ls-file' or args.command == 'lsf':
+        if len(args.extra) == 0:
+            # Count the number of all files
+            os.system('ls -l | grep "^-" | wc -l')
+        else:
+            # Count files of a specific type based on provided extension or pattern
+            pattern = args.extra[0]  # First extra argument as file pattern
+            os.system(f'ls -l | grep "^-" | grep "{pattern}" | wc -l')
     
     elif args.command == 'ls-reverse':
         # List files and directories in reverse order
@@ -102,7 +164,7 @@ def main():
             options = ' '.join(args.extra)
             os.system(f'ls -lRh {options}')
     
-    elif args.command == 'ls-block-size':
+    elif args.command == 'ls-block-size' or args.command == 'ls-bs' or args.command == 'ls-size':
         # Display the size of each file in specified block size
         if len(args.extra) == 1:
             block_size = args.extra[0]
@@ -158,7 +220,7 @@ def main():
     elif args.command == 'df':
         os.system('df -h')
 
-    elif args.command == 'du':
+    elif args.command == 'du' or args.command == 'disk':
         if len(args.extra) > 0:
             os.system(f'du -sh {args.extra[0]}')
         else:
@@ -200,7 +262,7 @@ def main():
             print('Please provide a keyword and file path for grep command')
 
     # Tar compression and decompression
-    elif args.command == 'tar-compress':
+    elif args.command == 'tar-compress' or args.command == 'tar':
         if len(args.extra) >= 2:
             source = args.extra[0]
             output = args.extra[1]
@@ -215,7 +277,7 @@ def main():
         else:
             print('Please provide a source and output file for tar compression')
 
-    elif args.command == 'tar-extract':
+    elif args.command == 'tar-extract' or args.command == 'untar':
         if len(args.extra) >= 2:
             source = args.extra[0]
             destination = args.extra[1]
@@ -252,7 +314,7 @@ def main():
             print('Please provide a file to add and the target tar file')
     
     # Unzip
-    elif args.command == 'unzip-all':
+    elif args.command == 'unzip-all' or args.command == 'unzip':
         if len(args.extra) == 2:
             source_dir = args.extra[0]
             target_dir = args.extra[1]
@@ -261,7 +323,7 @@ def main():
             print('Please provide both a source and a target directory.')
     
     # Zip compress
-    elif args.command == 'zip-all':
+    elif args.command == 'zip-all' or args.command == 'zip':
         if len(args.extra) >= 2:
             output = args.extra[0]
             sources = args.extra[1:]  # All other arguments as sources to be zipped
@@ -269,6 +331,29 @@ def main():
             os.system(f'zip -r {output} {source_params}')
         else:
             print('Please provide an output file name and at least one source to compress.')
+
+    # ffmpeg
+    elif args.command == 'convert-video' or args.command == 'convert-vid':
+        if len(args.extra) == 2:
+            source = args.extra[0]
+            destination = args.extra[1]
+
+            if '*' in source:
+                # Handle wildcard batch conversion
+                source_files = glob.glob(source)
+                destination_dir = os.path.dirname(destination)
+                file_extension = destination.split('.')[-1]
+
+                for src_file in source_files:
+                    basename = os.path.splitext(os.path.basename(src_file))[0]
+                    dest_file = os.path.join(destination_dir, f'{basename}.{file_extension}')
+                    os.system(f'ffmpeg -i "{src_file}" -c copy "{dest_file}" -y')
+            else:
+                # Handle single file conversion
+                os.system(f'ffmpeg -i "{source}" -c copy "{destination}" -y')
+        else:
+            print('Usage: convert-video [source file or pattern] [destination file or pattern]')
+
 
 
 if __name__ == '__main__':

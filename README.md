@@ -13,7 +13,7 @@ pip install linux-command
 
 ## Usage
 
-Once installed, you can access all commands using `cmd` followed by the specific command name. Below is a list of supported commands along with examples for each.
+Once installed, you can access all commands using `cmd` followed by the specific command name. You can use `cmd -h` or `cmd --help` to see the supported commands. Below is a list of supported commands along with examples for each.
 
 ---
 
@@ -244,7 +244,7 @@ This command will create a `.zip` file at `/path/to/output.zip` that contains ev
 
 ## Contributing
 
-We welcome contributions from the community! If you'd like to help improve `linux-command`, including reporting issues and submitting pull requests.
+We welcome contributions from the community! If you'd like to help improve `linux-command`, feel free to report issues or submit pull requests.
 
 ### Guidelines for Contributors
 
