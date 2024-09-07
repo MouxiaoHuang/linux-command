@@ -31,7 +31,7 @@ import glob
 
 
 # Define the version 
-VERSION = "0.2.1"
+VERSION = "0.2.2"
 PROJECT_URL = "https://github.com/MouxiaoHuang/linux-command" 
 
 
@@ -76,6 +76,14 @@ commands = {
 }
 
 
+def custom_help():
+    print("Available commands:")
+    for command, description in commands.items():
+        print(f'[{command}]: {description}')
+    print(f"For more information, visit: {PROJECT_URL}")
+
+
+
 def confirm_action(message):
     """Ask the user to confirm an action, accepting y/n or yes/no"""
     confirmation = input(f"{message} (yes/no or y/n): ").strip().lower()
@@ -91,29 +99,21 @@ def main():
     )
 
     parser.add_argument('-h', '--help', action='store_true', help='Show this help message and exit')
-    parser.add_argument('-V', '-v', '--version', action='version', version=f'linux-command {VERSION}', help='Show program\'s version number and exit')
+    parser.add_argument('-V', '--version', action='store_true', help='Show program\'s version number and exit')
     
     # Main command and subcommands
-    parser.add_argument('command', type=str, help='Command to execute')
+    parser.add_argument('command', nargs='?', help='Command to execute')
     parser.add_argument('extra', nargs='*', help='Additional arguments for the command')
 
     # Parse the arguments
     args = parser.parse_args()
 
     if args.help:
-        if args.command:
-            # Show help for a specific command
-            print(f'{args.command}: {commands.get(args.command, "No help available for this command.")}')
-        else:
-            # Show help for all commands
-            print("Available commands:")
-            for command, description in commands.items():
-                print(f'  {command}: {description}')
-            print("\nUse 'cmd -h [command]' to see help for a specific command.")
+        custom_help()
         return
 
-    if not args.command:
-        parser.print_help()
+    if args.version:
+        print(f'linux-command {VERSION}')
         return
 
     # `ls` commands
