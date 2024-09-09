@@ -31,7 +31,7 @@ import glob
 
 
 # Define the version 
-VERSION = "0.2.2"
+VERSION = "0.2.3"
 PROJECT_URL = "https://github.com/MouxiaoHuang/linux-command" 
 
 
@@ -44,9 +44,11 @@ commands = {
     'ls-dir': 'Count all directories. Same as `lsd`.',
     'ls-reverse': 'List files and directories in reverse order.',
     'ls-time': 'List sorted by modification time, newest first.',
+    'ls-human': 'List in human-readable format (for file sizes)',
+    'ls-long': 'Long format listing',
+    'ls-size': 'Sort files by size',
     'ls-recursive-size': 'List all files and directories recursively, with sizes in human-readable format',
     'ls-bs': 'Display the size of each file in specified block size (e.g., K, M, G).',
-    'ls-size': 'Display the size of each file in specified block size (e.g., K, M, G).',
     'ls-block-size': 'Display the size of each file in specified block size (e.g., K, M, G).',
     'ps': 'Basic process list.',
     'ps-all': 'Show all processes.',
@@ -156,6 +158,22 @@ def main():
             options = ' '.join(args.extra)
             os.system(f'ls -lt {options}')
     
+    elif args.command == 'ls-long':
+        # Long format listing
+        if len(args.extra) == 0:
+            os.system('ls -l')
+        else:
+            options = ' '.join(args.extra)
+            os.system(f'ls -l {options}')
+
+    elif args.command == 'ls-human':
+        # List in human-readable format (for file sizes)
+        if len(args.extra) == 0:
+            os.system('ls -lh')
+        else:
+            options = ' '.join(args.extra)
+            os.system(f'ls -lh {options}')
+    
     elif args.command == 'ls-recursive-size':
         # List all files and directories recursively, with sizes in human-readable format
         if len(args.extra) == 0:
@@ -164,7 +182,15 @@ def main():
             options = ' '.join(args.extra)
             os.system(f'ls -lRh {options}')
     
-    elif args.command == 'ls-block-size' or args.command == 'ls-bs' or args.command == 'ls-size':
+    elif args.command == 'ls-size':
+        # Sort files by size
+        if len(args.extra) == 0:
+            os.system('ls -lS')
+        else:
+            options = ' '.join(args.extra)
+            os.system(f'ls -lS {options}')
+    
+    elif args.command == 'ls-block-size' or args.command == 'ls-bs':
         # Display the size of each file in specified block size
         if len(args.extra) == 1:
             block_size = args.extra[0]
@@ -292,10 +318,15 @@ def main():
                     tar_files = glob.glob(os.path.join(source, '*.tar')) + glob.glob(os.path.join(source, '*.tar.gz'))
 
                 for tar_file in tar_files:
-                    os.system(f'tar -xzf {tar_file} -C {destination}')
-            elif source.endswith('.tar.gz') or source.endswith('.tar'):
-                # Extract a single tar file
-                os.system(f'tar -xzf {source} -C {destination}')
+                    if tar_file.endswith('.tar'):
+                        os.system(f'tar -xvf {tar_file} -C {destination}')
+                    elif tar_file.endswith('.tar.gz'):
+                        os.system(f'tar -xzvf {tar_file} -C {destination}')
+            # Extract a single tar file
+            elif source.endswith('.tar.gz'):
+                os.system(f'tar -xzvf {source} -C {destination}')
+            elif source.endswith('.tar'):
+                os.system(f'tar -xvf {source} -C {destination}')
             else:
                 print('Please provide a valid .tar or .tar.gz file, or a directory containing such files.')
 
